@@ -2,6 +2,7 @@ import 'package:stroke/data/csv/company_listings_passer.dart';
 import 'package:stroke/data/mapper/company_mapper.dart';
 import 'package:stroke/data/source/local/stoke_dao.dart';
 import 'package:stroke/data/source/remote/stoke_api.dart';
+import 'package:stroke/domain/model/company_info.dart';
 import 'package:stroke/domain/model/company_listing.dart';
 import 'package:stroke/domain/repository/stoke_repository.dart';
 import 'package:stroke/util/result.dart';
@@ -44,6 +45,16 @@ class StokeRepositoryImpl implements StockRepository {
       return Result.success(remoteListings);
     } catch (e) {
       return Result.error(Exception('데이터 로드 실패'));
+    }
+  }
+
+  @override
+  Future<Result<CompanyInfo>> getCompanyInfo(String symbol) async {
+    try {
+      final dto = await _api.getCompanyInfo(symbol: symbol);
+      return Result.success(dto.toCompanyInfo());
+    } catch (e) {
+      return Result.error(Exception('회사정보 로드 실패: $e'));
     }
   }
 }
